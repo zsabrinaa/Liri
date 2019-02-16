@@ -5,7 +5,7 @@ var fs = require("fs");
 var keys = require("./keys")
 var Spotify = require('node-spotify-api');
 var spotify = new Spotify(keys.spotifyKeys);
-
+var axios = require("axios");
 var pickCommand = function (command, input){
 	switch (command) {
 	case "movie-this":
@@ -31,14 +31,17 @@ function movie(input) {
 		if (err) {
 			return console.log('Error occurred: ' + err);
 		} else {
+			console.log("-------------------------");
 			console.log(JSON.stringify("Movie name:" + response.data.Title));
+			console.log(JSON.stringify("Actors:" + response.data.Actors));
 			console.log(JSON.stringify("Released Year:" + response.data.Year));
 			console.log(JSON.stringify("IMBD Rating:" + response.data.imdbRating));
 			console.log(JSON.stringify("Rotten Tomato Rating:" + response.data.Ratings[1].Value));
 			console.log(JSON.stringify("Country where the movie was produced:" + response.data.Country));
 			console.log(JSON.stringify("Language:" + response.data.Language));
 			console.log(JSON.stringify("Plot:" + response.data.Plot));
-			console.log(JSON.stringify("Actors:" + response.data.Actors));
+			console.log("-------------------------");
+			
 		}
 	})
 
@@ -51,10 +54,12 @@ function spotifyS(input) {
 			return console.log('Error occurred: ' + err);
 		} else {
 			for (var i = 0; i < data.tracks.items.length; i++) {
+				console.log("-------------------------");
 				console.log("Song(s):" + JSON.stringify(data.tracks.items[i].name, null, 2));
 				console.log("Album:" + JSON.stringify(data.tracks.items[i].album.name, null, 2));
 				console.log("Artist(s):" + JSON.stringify(data.tracks.items[i].artists[i].name, null, 2));
 				console.log("Preview:" + JSON.stringify(data.tracks.items[i].external_urls.spotify, null, 2));
+				console.log("-------------------------");
 			}
 		}
 
@@ -67,9 +72,11 @@ function bands(input) {
 			console.log("Oops! Seems like they are not on tour right now")
 		} else {
 			for (var i = 0; i < response.data.length; i++) {
+				console.log("-------------------------");
 				console.log(moment(response.data[i].datetime).format('MMMM Do YYYY, h:mm:ss a'));
 				console.log(JSON.stringify(response.data[i].venue.name, null, 2));
 				console.log(JSON.stringify(response.data[i].venue.region, null, 2));
+				console.log("-------------------------");
 			}
 
 		}
