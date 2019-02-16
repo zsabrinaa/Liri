@@ -1,35 +1,32 @@
 require("dotenv").config();
-var axios = require("axios");
+
 var moment = require("moment");
 var fs = require("fs");
 var keys = require("./keys")
 var Spotify = require('node-spotify-api');
 var spotify = new Spotify(keys.spotifyKeys);
-var userCommand = process.argv[2];
-var userInputs = process.argv[3];
-switch (userCommand) {
+
+var pickCommand = function (command, input){
+	switch (command) {
 	case "movie-this":
-		movie();
+		movie(input);
 		break;
 	case "spotify-this-song":
-		spotifyS();
+		spotifyS(input);
 		break;
 	case "concert-this":
-		bands();
+		bands(input);
 		break;
 	case "do-what-it-says":
-		doRandom();
+		doRandom(input);
 		break;
 }
-function mkValue(a, b) {	
-	userCommand = a;
-	userInputs = b;
 }
-function movie() {
-	if (userInputs == undefined) {
-		userInputs = "Mr. Nobody"
+function movie(input) {
+	if (input == undefined) {
+		input = "Mr. Nobody"
 	}
-	var queryUrl = "http://www.omdbapi.com/?t=" + userInputs + "&y=&plot=short&apikey=trilogy";
+	var queryUrl = "http://www.omdbapi.com/?t=" + input + "&y=&plot=short&apikey=trilogy";
 	axios.get(queryUrl).then(function (response, err) {
 		if (err) {
 			return console.log('Error occurred: ' + err);
@@ -47,9 +44,9 @@ function movie() {
 
 };
 function spotifyS(input) {
-	if (userInputs === undefined) {
-		userInputs = "the sign" + " ace of base.";
-	} spotify.search({ type: 'track', query: userInputs, }, function (err, data) {
+	if (input === undefined) {
+		input = "the sign" + " ace of base.";
+	} spotify.search({ type: 'track', query: input, }, function (err, data) {
 		if (err) {
 			return console.log('Error occurred: ' + err);
 		} else {
@@ -63,8 +60,8 @@ function spotifyS(input) {
 
 	});
 }
-function bands() {
-	var queryUrl = "https://rest.bandsintown.com/artists/" + userInputs + "/events?app_id=codingbootcamp&date=upcoming"
+function bands(input) {
+	var queryUrl = "https://rest.bandsintown.com/artists/" + input + "/events?app_id=codingbootcamp&date=upcoming"
 	axios.get(queryUrl).then(function (response, err) {
 		if (response.data[0] == undefined) {
 			console.log("Oops! Seems like they are not on tour right now")
@@ -78,15 +75,18 @@ function bands() {
 		}
 	})
 }
+// update
+// this function is being fixed and functional now
 function doRandom() {
 	fs.readFile("random.txt", "utf8", function (error, data) {
 		if (error) {
 			return console.log(error);
 		}
 		var dataArr = data.split(",");
-		mkValue(dataArr[0], dataArr[1]);
-		console.log(process.argv[2]);
-		console.log(process.argv[3]);
+		pickCommand(dataArr[0], dataArr[1]);
 	})
 }
-
+	function startFunc(){
+		pickCommand(process.argv[2],process.argv[3]);
+		};
+	startFunc();
